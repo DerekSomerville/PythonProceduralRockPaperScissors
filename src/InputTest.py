@@ -1,13 +1,13 @@
-class InputTest:
 
-    inputList = []
+inputList = []
 
-    def getInputString(self,request):
-        return self.inputList.pop(0)
+def getInputString(request):
+    return inputList.pop(0)
 
-    def getInputInt(self, request):
-        response = self.getInputString("Please enter an integer")
-        return int(response)
+def getInputInt(request):
+    response = getInputString("Please enter an integer")
+    return int(response)
 
-    def setInputList(self,inputList):
-        self.inputList = inputList
+def setInputList(newInputList):
+    global inputList
+    inputList = newInputList

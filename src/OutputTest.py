@@ -1,9 +1,8 @@
-class OutputTest:
 
-    outputlist = []
+outputlist = []
 
-    def setOutputList(self,outputList):
-        self.outputlist = outputList
+def setOutputList(outputList):
+    outputlist = outputList
 
-    def print(self,request):
-        self.outputlist.append(request)
+def printMessage(request):
+    outputlist.append(request)

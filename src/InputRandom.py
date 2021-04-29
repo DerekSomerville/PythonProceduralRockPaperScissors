@@ -1,15 +1,15 @@
 from random import randint
-from src.WriteToFile import WriteToFile
+import src.WriteToFile
+import src.InputConsole
 
-class InputRandom:
-    writeToFile = True
-    inputWriteToFile = WriteToFile("computerInputLog.csv")
+writeToFile = True
 
-    def getInputString(self, request):
-        return self.getInputInt()
+def getInputString( request):
+    return getInputInt()
 
-    def getInputInt(self, request):
-        rand = randint(0, 2)
-        if self.writeToFile:
-            self.inputWriteToFile.writeToFile(rand)
-        return rand
+def getInputInt(request):
+    rand = randint(0, 2)
+    if writeToFile:
+        fileWritter = src.InputConsole.fileWritter
+        src.WriteToFile.writeToFile(fileWritter, rand)
+    return rand

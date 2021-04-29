@@ -1,17 +1,19 @@
-from src.WriteToFile import WriteToFile
+import src.WriteToFile
 
 writeToFile = True
-userInputWriteToFile = WriteToFile("userInputLog.csv")
+fileWritter = None
 
-class InputConsole:
-    def getInputString(self, request):
-        userInput = input(request)
-        if writeToFile:
-            userInputWriteToFile.writeToFile(userInput)
-        return userInput
+def getInputString( request):
+    userInput = input(request)
+    if writeToFile:
+        global fileWritter
+        if fileWritter == None:
+            fileWritter = src.WriteToFile.getFileReader("userInputLog.csv")
+        src.WriteToFile.writeToFile(fileWritter,userInput)
+    return userInput
 
-    def getInputInt(self, request):
-        response = self.getInputString(request)
-        while not str(response).isnumeric():
-            response = self.getInputString("Please enter an integer")
-        return int(response)
+def getInputInt( request):
+    response = getInputString(request)
+    while not str(response).isnumeric():
+        response = getInputString("Please enter an integer")
+    return int(response)

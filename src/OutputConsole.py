@@ -1,10 +1,12 @@
-from src.WriteToFile import WriteToFile
+import src.WriteToFile
 
-class OutputConsole:
-    writeToFile = True
-    outputWriteToFile = WriteToFile("userOutputLog.csv")
+writeToFile = True
+fileWritter = None
 
-    def print(self,output):
-        if self.writeToFile:
-            self.outputWriteToFile.writeToFile(output)
-        print(output)
+def printMessage(output):
+    if writeToFile:
+        global fileWritter
+        if fileWritter == None:
+            fileWritter = src.WriteToFile.getFileReader("userOutputLog.csv")
+        src.WriteToFile.writeToFile(fileWritter, output)
+    print(output)

@@ -1,31 +1,56 @@
-from random import randint
-from src.InputConsole import InputConsole
-from src.OutputConsole import OutputConsole
-from src.ConfigFromFile import ConfigFromFile
-from src.InputRandom import InputRandom
+import src.InputConsole
+import src.InputTest
+import src.OutputConsole
+import src.OutputTest
+import src.ConfigFromFile
+import src.ConfigFromStub
+import src.InputRandom
 
+testFile = False
+testInput = False
 
-userInput = InputConsole()
-userOutput = OutputConsole()
-computerInput = InputRandom()
-configProvider = ConfigFromFile()
-property = []
+def setTestFile(testing):
+    global testFile
+    testFile = testing
 
-def setUserInput(NewUserInput):
-    global userInput
-    userInput = NewUserInput
+def setTestInput(testing):
+    global testInput
+    testInput = testing
 
-def setComputerInput(newComputerInput):
-    global computerInput
-    computerInput = newComputerInput
+def getConfig():
+    result = None
+    global testFile
+    if testFile:
+        result = src.ConfigFromStub.getConfig()
+    else:
+        result = src.ConfigFromFile.getConfig()
 
-def setUserOutput (newUserOutput):
-    global userOutput
-    userOutput = newUserOutput
+    return result
 
-def setConfig(newConfig):
-    global configProvider
-    configProvider = newConfig
+def printMessage(message):
+    global testInput
+    if testInput:
+        src.OutputTest.printMessage(message)
+    else:
+        src.OutputConsole.printMessage(message)
+
+def userInput(request):
+    result = None
+    global testInput
+    if testInput:
+        result = src.InputTest.getInputInt(request)
+    else:
+        result = src.InputConsole.getInputInt(request)
+    return result
+
+def computerInput(request):
+    result = None
+    global testInput
+    if testInput:
+        result = src.InputTest.getInputInt(request)
+    else:
+        result = src.InputRandom.getInputInt(request)
+    return result
 
 def determineWinner(player,computer):
     if player == computer:
@@ -44,25 +69,25 @@ def getUserChoiceRequest(weapons):
 
 def getUserChoice(weapons):
     request = getUserChoiceRequest(weapons)
-    player = userInput.getInputInt(request)
+    player = userInput(request)
     if player in [0,1,2]:
-        userOutput.print("You selected " + weapons[player])
+        printMessage("You selected " + weapons[player])
     return player
 
 def getComputerChoice( weapons):
-    chosen = computerInput.getInputInt("")
-    userOutput.print("Computer choose " + weapons[chosen])
+    chosen = computerInput("")
+    printMessage("Computer choose " + weapons[chosen])
     return chosen
 
 def getListOfGames():
-    property = configProvider.getConfig()
+    property = getConfig()
     listOfGames = []
     for counter in range(1,len(property)):
         listOfGames.append(property[counter].split(":")[0])
     return listOfGames
 
 def getWeaponLists():
-    property = configProvider.getConfig()
+    property = getConfig()
     weaponLists = []
     for counter in range(1,len(property)):
         weaponLists.append(property[counter].split(":")[1].split(","))
@@ -81,7 +106,7 @@ def generateGamesListRequest():
 
 def getGame():
     request = generateGamesListRequest()
-    userGame = userInput.getInputInt(request)
+    userGame = userInput(request)
     weaponsLists = getWeaponLists()
     return weaponsLists[userGame]
 
@@ -91,7 +116,7 @@ def play():
     while player in [0,1,2]:
         computer = getComputerChoice(weapon)
         result = determineWinner(player,computer)
-        userOutput.print(result)
+        printMessage(result)
         player = getUserChoice(weapon)
 
 def main():

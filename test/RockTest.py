@@ -1,10 +1,8 @@
 import unittest
 from unittest.mock import MagicMock
-from src.ConfigFromStub import ConfigFromStub
-from src.ConfigFromFile import ConfigFromFile
-
-from src.InputTest import InputTest
-from src.OutputTest import OutputTest
+import src.ConfigFromFile
+import src.InputTest
+import src.OutputTest
 from src.ReadFileToList import *
 from src.RockPaperScissors import *
 
@@ -15,7 +13,7 @@ class RockTest(unittest.TestCase):
         self.assertEqual("Draw", result)
 
     def test_GenerateGamesRequestStub(self):
-        setConfig(ConfigFromStub())
+        setTestFile(True)
         result = generateGamesListRequest();
         self.assertEqual("Please select 0 - Rock Paper Scissors 1 - Star Wars", result)
 
@@ -25,40 +23,31 @@ class RockTest(unittest.TestCase):
         propertyData.append("Rock Paper Scissors:Rock,Scissors,Paper")
         propertyData.append("Star War:Darth Vadar,Emperor,Luke Skywalker")
         property = []
-        configProvider = ConfigFromFile()
-        configProvider.getConfig = MagicMock(return_value=propertyData)
-        setConfig(configProvider)
+        setTestFile(False)
+        src.ConfigFromFile.getConfig = MagicMock(return_value=propertyData)
         result = getListOfGames();
         self.assertEqual(['Rock Paper Scissors', 'Star War'], result)
 
-    def getUserInput(self,inputs):
-        userInput = InputTest()
-        userInput.inputList = inputs
-        return userInput
 
     def testRockVersusRock(self):
-        setConfig(ConfigFromStub())
-        userOutput = OutputTest()
-        setUserOutput(userOutput)
-        setUserInput(self.getUserInput([0,0,4]))
-        setComputerInput(self.getUserInput([0]))
+        setTestFile(True)
+        setTestInput(True)
+        src.InputTest.inputList = [0,0,0,4]
         play()
-        result = userOutput.outputlist.pop(-1)
+        result = src.OutputTest.outputlist.pop(-1)
         self.assertEqual(result,"Draw")
 
     def testReplay(self):
-        setConfig(ConfigFromFile())
-        setUserInput(self.getUserInput(getList("userInputLog.csv")))
-        setComputerInput(self.getUserInput(getList("computerInputLog.csv")))
+        setTestFile(False)
+        setTestInput(True)
+        src.InputTest.inputList = getList("userInputLog.csv")
         fileOutput = getList("userOutputLog.csv")
-        userOutput = OutputTest()
-        setUserOutput(userOutput)
         play()
-        self.assertEqual(userOutput.outputlist,fileOutput)
+        self.assertEqual(src.OutputTest.outputlist,fileOutput)
 
     def testPropertyMoreThanOne(self):
-        config = ConfigFromFile()
-        propertyData = config.getConfig()
+        setTestFile(False)
+        propertyData = getConfig()
         self.assertTrue(len(propertyData) >= 1)
 
     def testAtLeastOneGame(self):
